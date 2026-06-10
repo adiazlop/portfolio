@@ -8,7 +8,13 @@ const VALID_EXT = ['txt', 'png', 'jpg'];
 
 function isAnchor(href) {
   const isValidExtension = VALID_EXT.includes(href?.split('.').pop());
-  return href?.includes('://') || href?.[0] === '#' || isValidExtension;
+  return (
+    href?.includes('://') ||
+    href?.[0] === '#' ||
+    href?.startsWith('mailto:') ||
+    href?.startsWith('tel:') ||
+    isValidExtension
+  );
 }
 
 export const Link = forwardRef(

@@ -10,8 +10,12 @@ function isExternalLink(href) {
   return href?.includes('://');
 }
 
+function isAnchorLink(href) {
+  return isExternalLink(href) || href?.startsWith('mailto:') || href?.startsWith('tel:');
+}
+
 export const Button = forwardRef(({ href, ...rest }, ref) => {
-  if (isExternalLink(href) || !href) {
+  if (isAnchorLink(href) || !href) {
     return <ButtonContent href={href} ref={ref} {...rest} />;
   }
 

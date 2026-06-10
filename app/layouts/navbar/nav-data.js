@@ -15,7 +15,7 @@ export const navLinks = [
   },
   {
     label: 'Contact',
-    pathname: '/contact',
+    pathname: 'mailto:trentadosbitstudio@gmail.com',
   },
 ];
 

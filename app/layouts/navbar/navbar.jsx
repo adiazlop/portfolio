@@ -139,6 +139,9 @@ export const Navbar = () => {
     if (menuOpen) setMenuOpen(false);
   };
 
+  const isAnchorLink = pathname =>
+    pathname?.startsWith('mailto:') || pathname?.startsWith('tel:');
+
   return (
     <header className={styles.navbar} ref={headerRef}>
       <RouterLink
@@ -155,45 +158,68 @@ export const Navbar = () => {
       <NavToggle onClick={() => setMenuOpen(!menuOpen)} menuOpen={menuOpen} />
       <nav className={styles.nav}>
         <div className={styles.navList}>
-          {navLinks.map(({ label, pathname }) => (
-            <RouterLink
-              unstable_viewTransition
-              prefetch="intent"
-              to={pathname}
-              key={label}
-              data-navbar-item
-              className={styles.navLink}
-              aria-current={getCurrent(pathname)}
-              onClick={handleNavItemClick}
-            >
-              {label}
-            </RouterLink>
-          ))}
+          {navLinks.map(({ label, pathname }) =>
+            isAnchorLink(pathname) ? (
+              <a key={label} href={pathname} data-navbar-item className={styles.navLink}>
+                {label}
+              </a>
+            ) : (
+              <RouterLink
+                unstable_viewTransition
+                prefetch="intent"
+                to={pathname}
+                key={label}
+                data-navbar-item
+                className={styles.navLink}
+                aria-current={getCurrent(pathname)}
+                onClick={handleNavItemClick}
+              >
+                {label}
+              </RouterLink>
+            )
+          )}
         </div>
         <NavbarIcons desktop />
       </nav>
       <Transition unmount in={menuOpen} timeout={msToNum(tokens.base.durationL)}>
         {({ visible, nodeRef }) => (
           <nav className={styles.mobileNav} data-visible={visible} ref={nodeRef}>
-            {navLinks.map(({ label, pathname }, index) => (
-              <RouterLink
-                unstable_viewTransition
-                prefetch="intent"
-                to={pathname}
-                key={label}
-                className={styles.mobileNavLink}
-                data-visible={visible}
-                aria-current={getCurrent(pathname)}
-                onClick={handleMobileNavClick}
-                style={cssProps({
-                  transitionDelay: numToMs(
-                    Number(msToNum(tokens.base.durationS)) + index * 50
-                  ),
-                })}
-              >
-                {label}
-              </RouterLink>
-            ))}
+            {navLinks.map(({ label, pathname }, index) =>
+              isAnchorLink(pathname) ? (
+                <a
+                  key={label}
+                  href={pathname}
+                  className={styles.mobileNavLink}
+                  data-visible={visible}
+                  onClick={() => menuOpen && setMenuOpen(false)}
+                  style={cssProps({
+                    transitionDelay: numToMs(
+                      Number(msToNum(tokens.base.durationS)) + index * 50
+                    ),
+                  })}
+                >
+                  {label}
+                </a>
+              ) : (
+                <RouterLink
+                  unstable_viewTransition
+                  prefetch="intent"
+                  to={pathname}
+                  key={label}
+                  className={styles.mobileNavLink}
+                  data-visible={visible}
+                  aria-current={getCurrent(pathname)}
+                  onClick={handleMobileNavClick}
+                  style={cssProps({
+                    transitionDelay: numToMs(
+                      Number(msToNum(tokens.base.durationS)) + index * 50
+                    ),
+                  })}
+                >
+                  {label}
+                </RouterLink>
+              )
+            )}
             <NavbarIcons />
             <ThemeToggle isMobile />
           </nav>
